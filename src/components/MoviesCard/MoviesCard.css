@@ -1,0 +1,104 @@
+.card {
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
+  background: rgb(253, 253, 253);
+  list-style: none;
+}
+
+.card__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+}
+
+.card__description {
+  max-width: 80%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.card__title {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card__duration {
+  margin: 0;
+  color: #a0a0a0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 13px;
+}
+
+.card__btn {
+  width: 30px;
+  height: 30px;
+  background-color: #f9f9f9;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  border-radius: 36px;
+  padding: 0;
+  margin: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.card__btn:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.card__btn_type_delete {
+  background-size: 8px;
+  background-image: url("../../images/cross-del.svg");
+}
+
+.card__btn_type_save {
+  background-size: 10px 13px;
+  background-image: url("../../images/flag-save.svg");
+}
+
+.card__btn_type_save-active {
+  background-image: url("../../images/flag-save-active.svg");
+  background-color: #2be080;
+}
+
+.card__link {
+  transition: opacity 0.5s ease-out;
+}
+
+.card__link:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.card__image {
+  width: 100%;
+  height: 168px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 768px) {
+  .card__image {
+    height: 190px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .card__image {
+    height: 203px;
+  }
+}

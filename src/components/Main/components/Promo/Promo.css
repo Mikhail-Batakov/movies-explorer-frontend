@@ -1,0 +1,116 @@
+.promo {
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  background-color: #465dff;
+  box-sizing: border-box;
+  padding: 70px 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 44px;
+}
+
+.promo-image {
+  object-fit: contain;
+  width: calc(210px + (310 - 210) * ((100vw - 320px) / (768 - 320)));
+  height: calc(206px + (304 - 206) * ((100vw - 320px) / (768 - 320)));
+}
+
+.promo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.promo__title {
+  margin: 0 10px;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 38px;
+  letter-spacing: -0.04em;
+  max-width: 720px;
+}
+
+.promo__subtitle {
+  margin: 24px 30px 80px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  max-width: 350px;
+}
+
+.promo__link {
+  color: #ffffff;
+  text-align: center;
+  width: 129px;
+  height: 36px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 36px;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: transparent;
+  transition: opacity 0.5s ease-out;
+  cursor: pointer;
+}
+
+.promo__link:hover {
+  opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .promo {
+    padding: 140px 0 76px;
+    gap: 48px;
+  }
+
+  .promo__title {
+    letter-spacing: normal;
+    margin: 0 44px;
+    font-size: 40px;
+    line-height: 50px;
+    max-width: 820px;
+  }
+
+  .promo__subtitle {
+    margin: 22px 254px 92px;
+    max-width: 420px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .promo {
+    padding: 75px 70px;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: start;
+    gap: 0;
+  }
+
+  .promo-container {
+    align-items: start;
+    text-align: start;
+  }
+
+  .promo-image {
+    width: 310px;
+    height: 304px;
+  }
+
+  .promo__title {
+    margin: 0;
+    font-size: 50px;
+    line-height: 58px;
+    max-width: 640px;
+  }
+
+  .promo__subtitle {
+    margin: 36px 0 146px 0;
+    max-width: 310px;
+  }
+}
