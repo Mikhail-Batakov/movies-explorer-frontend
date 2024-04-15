@@ -1,0 +1,80 @@
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.toggle-switch__label {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #000;
+}
+
+.toggle-switch__control {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  transition: all 0.5s ease;
+}
+
+.toggle-switch__control:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Чекбокс, скрытый для визуальной стилизации */
+.toggle-switch__checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Слайдер переключателя */
+.toggle-switch__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ebebeb;
+  transition: 0.4s ease;
+  border-radius: 20px;
+}
+
+/* Внутренний кружок слайдера */
+.toggle-switch__slider:before {
+  position: absolute;
+  content: "";
+  width: 8px;
+  height: 8px;
+  left: 6px;
+  bottom: 6px;
+  background-color: #f5f5f5; /* Белый цвет внутреннего кружка */
+  transition: 0.4s ease;
+  border-radius: 50%;
+}
+
+/* Изменение фона слайдера при активном состоянии чекбокса */
+.toggle-switch__checkbox:checked + .toggle-switch__slider {
+  background-color: #2be080; /* Серый фон при активации */
+}
+
+/* Смещение внутреннего кружка при активном состоянии */
+.toggle-switch__checkbox:checked + .toggle-switch__slider:before {
+  background-color: #ffffff;
+  transform: translateX(16px);
+}
+
+@media (min-width: 768px) {
+  .toggle-switch {
+    gap: 12px;
+  }
+
+  .toggle-switch__label {
+    font-size: 14px;
+    line-height: 18px;
+  }
+}

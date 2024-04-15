@@ -1,0 +1,11 @@
+.logo-titul {
+  height: 38px;
+  width: 38px;
+  display: block;
+  transition: all 0.5s ease;
+}
+
+.logo-titul:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}

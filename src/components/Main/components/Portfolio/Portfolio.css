@@ -1,0 +1,94 @@
+.portfolio {
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  padding: 0 14px 70px;
+}
+
+.portfolio__title {
+  margin: 0;
+  color: #a0a0a0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.portfolio__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-top: 40px;
+}
+
+.portfolio__item {
+  border-bottom: 1px solid #e6e6e6;
+  padding: 20px 0 19px;
+}
+
+.portfolio__item-link {
+  color: #000000;
+  background: transparent url(../../../../images/strelka.svg) right center;
+  background-size: 10px;
+  background-repeat: no-repeat;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: opacity 0.5s ease;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: -0.04em;
+}
+
+.portfolio__item-link:hover {
+  opacity: 0.7;
+}
+
+.portfolio__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.portfolio__item:first-child {
+  padding-top: 0;
+}
+
+@media (min-width: 768px) {
+  .portfolio {
+    padding: 0 50px 90px;
+  }
+
+  .portfolio__title {
+    font-size: 18px;
+    line-height: 20px;
+  }
+
+  .portfolio__item-link {
+    background-size: 15px;
+  }
+
+  .portfolio__items {
+    padding-top: 50px;
+  }
+
+  .portfolio__item-link {
+    font-size: 28px;
+    line-height: 50px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .portfolio {
+    padding: 0 70px 125px;
+  }
+
+  .portfolio__item-link {
+    background-size: 17px;
+  }
+
+  .portfolio__item-link {
+    font-size: 30px;
+    line-height: 50px;
+  }
+}
