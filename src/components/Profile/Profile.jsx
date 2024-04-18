@@ -1,45 +1,77 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+// import { unstable_batchedUpdates as batch } from "react-dom";
 
 import "./Profile.css";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import useValidate from "../../utils/hooks/useFormValidate.js";
 
-function Profile({ onSubmit, onSignOut, ...props }) {
+function Profile({
+  onSubmit,
+  onSignOut,
+  isError,
+  isSending,
+  isSuccess,
+  setIsSuccess,
+  isFormActive,
+  setIsFormActive,
+  setIsError,
+}) {
   const currentUser = useContext(CurrentUserContext);
-  const [isInputActive, setIsInputActive] = useState(false);
 
   const {
     formValues,
     errors,
     isFormValid,
-
     handleChange,
-
     setInitialValue,
+    resetFormNew,
   } = useValidate();
 
+  // получаем текущие значения
   useEffect(() => {
-    setInitialValue(
-      currentUser
-        ? { name: currentUser.name, email: currentUser.email }
-        : { name: "", email: "" }
-    );
-  }, [setInitialValue, currentUser]);
+    if (currentUser) {
+      setInitialValue("name", currentUser.name);
+      setInitialValue("email", currentUser.email);
+    }
+  }, [currentUser, setInitialValue, isFormActive]);
 
-  // разблокирования полей ввода
-  function handleEditClick() {
-    setIsInputActive(true);
+  function inputChange(e) {
+    setIsError(false);
+    setIsSuccess(false);
+    handleChange(e);
   }
+
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     setInitialValue({
+  //       name: currentUser.name,
+  //       email: currentUser.email,
+  //     });
+  //   }
+  // }, [setInitialValue, currentUser]);
+
+  // useEffect(() => {
+  //   resetFormNew({ name: currentUser.name, email: currentUser.email });
+  // }, [resetFormNew, currentUser, isFormActive]);
 
   function handleSubmit(event) {
     event.preventDefault();
-    onSubmit({
-      name: formValues.name,
-      email: formValues.email,
-    });
 
-    setIsInputActive(false);
+    onSubmit(formValues.name, formValues.email);
+
+    // resetFormNew();
+  }
+
+  // разблокирования полей ввода
+  function handleEditClick() {
+    // setIsFormActive(true);
+    // setIsSuccess(false);
+
+    setIsFormActive(true);
+    console.log("клик");
+    // setIsSuccess(false);
+    // isError && setIsError(false);
   }
 
   return (
@@ -63,14 +95,10 @@ function Profile({ onSubmit, onSignOut, ...props }) {
               required
               minLength={2}
               maxLength={30}
-              value={
-                formValues.name !== undefined
-                  ? formValues.name
-                  : currentUser.name
-              }
+              value={formValues.name || ""}
               placeholder="Введите имя"
-              disabled={!isInputActive}
-              onChange={handleChange}
+              disabled={!isFormActive}
+              onChange={inputChange}
             />
           </label>
           <span className="profile__input-error name__error">
@@ -87,22 +115,32 @@ function Profile({ onSubmit, onSignOut, ...props }) {
               name="email"
               type="email"
               required
-              value={
-                formValues.email !== undefined
-                  ? formValues.email
-                  : currentUser.email
-              }
+              value={formValues.email || ""}
               placeholder="Введите e-mail"
-              disabled={!isInputActive}
-              onChange={handleChange}
+              disabled={!isFormActive}
+              onChange={inputChange}
             />
           </label>
           <span className="profile__input-error email__error">
             {errors.email}
           </span>
         </div>
+        {/* <span className="profile__save-message profile__save-error_visible">
+              При обнавлении данных произошла ошибка
+            </span> */}
+        <span
+          className={`profile__save-message ${
+            isError && "profile__save-message_type_error"
+          }
+               ${isSuccess && "profile__save-message_type_succes"}
+            }`}
+        >
+          {isError
+            ? "При обновлении данных произошла ошибка"
+            : "Данные успешно обнавлены"}
+        </span>
 
-        {!isInputActive ? (
+        {!isFormActive ? (
           <>
             <button
               className="profile__btn profile__btn_type_edit"
@@ -118,15 +156,11 @@ function Profile({ onSubmit, onSignOut, ...props }) {
           </>
         ) : (
           <>
-            <span className="profile__save-error">
-              При авторизации произошла ошибка. Токен не передан или передан не
-              в том формате.
-            </span>
             <button
               className="profile__btn profile__btn_type_save"
               type="submit"
               aria-label="Сохранить"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isError}
             >
               Сохранить
             </button>

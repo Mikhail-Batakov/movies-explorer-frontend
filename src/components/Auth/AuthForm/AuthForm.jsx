@@ -12,13 +12,7 @@ function AuthForm({
   linkName,
   routeTo,
 }) {
-  const {
-    formValues,
-    errors,
-    isFormValid,
-
-    handleChange,
-  } = useValidate();
+  const { formValues, errors, isFormValid, handleChange } = useValidate();
 
   const { name, email, password } = formValues;
 
@@ -50,6 +44,7 @@ function AuthForm({
               type="text"
               placeholder="Введите имя"
               required
+              erorr={errors.name}
               minLength={2}
               maxLength={30}
               value={name || ""}
