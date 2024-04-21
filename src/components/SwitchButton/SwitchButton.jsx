@@ -1,10 +1,8 @@
-import "./SwitchButton.css"; // Предполагается, что стили сохранены в этом файле
+import "./SwitchButton.css";
 
-const ToggleSwitch = ({ label, isChecked, onChange }) => {
-  //   const [isChecked, setIsChecked] = useState(false);
-
+const ToggleSwitch = ({ label, isCheck, onChange, isDisableCheckBox }) => {
   const handleChange = () => {
-    onChange(!isChecked);
+    onChange(!isCheck);
   };
 
   return (
@@ -13,8 +11,9 @@ const ToggleSwitch = ({ label, isChecked, onChange }) => {
         <input
           type="checkbox"
           className="toggle-switch__checkbox"
-          checked={isChecked}
+          checked={isCheck}
           onChange={handleChange}
+          disabled={isDisableCheckBox}
         />
         <span className="toggle-switch__slider"></span>
       </label>

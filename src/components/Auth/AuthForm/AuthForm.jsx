@@ -2,6 +2,8 @@ import "./AuthForm.css";
 import { Link } from "react-router-dom";
 import LogoLink from "../../LogoLink/LogoLink.jsx";
 import useValidate from "../../../utils/hooks/useFormValidate.js";
+import { EMAIL_REGEX, NAME_REGEX } from "../../../utils/constants.js";
+import { useEffect } from "react";
 
 function AuthForm({
   type,
@@ -11,16 +13,22 @@ function AuthForm({
   actionText,
   linkName,
   routeTo,
+  isError,
+  setIsError,
+  isSending,
 }) {
-  const {
-    formValues,
-    errors,
-    isFormValid,
-
-    handleChange,
-  } = useValidate();
+  const { formValues, errors, isFormValid, handleChange } = useValidate();
 
   const { name, email, password } = formValues;
+
+  function inputChange(e) {
+    setIsError(false);
+    handleChange(e);
+  }
+
+  useEffect(() => {
+    setIsError(false);
+  }, [setIsError]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -50,10 +58,12 @@ function AuthForm({
               type="text"
               placeholder="Введите имя"
               required
+              pattern={NAME_REGEX}
+              erorr={errors.name}
               minLength={2}
               maxLength={30}
               value={name || ""}
-              onChange={handleChange}
+              onChange={inputChange}
             />
             <span className="auth__input-error name__error">{errors.name}</span>
           </label>
@@ -70,8 +80,9 @@ function AuthForm({
             type="email"
             placeholder="Введите email"
             required
+            pattern={EMAIL_REGEX}
             value={email || ""}
-            onChange={handleChange}
+            onChange={inputChange}
           />
           <span className="auth__input-error email__error">{errors.email}</span>
         </label>
@@ -88,7 +99,7 @@ function AuthForm({
             placeholder="Введите пароль"
             required
             value={password || ""}
-            onChange={handleChange}
+            onChange={inputChange}
           />
           <span className="auth__input-error password__error">
             {errors.password}
@@ -96,12 +107,18 @@ function AuthForm({
         </label>
 
         <>
-          <span className="auth__error password__error">{errors.email}</span>
+          <span
+            className={`auth__error ${isError ? "auth__error_visible" : ""}`}
+          >
+            {type === "signup"
+              ? "При регистрации произошла ошибка"
+              : "При входе произошла ошибка"}
+          </span>
           <button
             className="auth__btn"
             type="submit"
             aria-label={type === "signup" ? "Зарегистрироваться" : "Войти"}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isError || isSending}
           >
             {btnName}
           </button>

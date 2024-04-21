@@ -12,7 +12,8 @@
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "why-did-you-update": "^1.0.8"
   },
   "scripts": {
     "predeploy": "npm run build",

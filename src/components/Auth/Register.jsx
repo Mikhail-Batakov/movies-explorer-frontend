@@ -1,6 +1,6 @@
 import AuthForm from "./AuthForm/AuthForm.jsx";
 
-function Register({ onRegister }) {
+function Register({ onRegister, isError, setIsError, isSending }) {
   return (
     <AuthForm
       type="signup"
@@ -10,6 +10,9 @@ function Register({ onRegister }) {
       actionText="Уже зарегистрированы?"
       linkName="Войти"
       routeTo="/signin"
+      isError={isError}
+      setIsError={setIsError}
+      isSending={isSending}
     />
   );
 }

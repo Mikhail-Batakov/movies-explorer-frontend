@@ -1,24 +1,27 @@
 import { useState, useEffect } from "react";
 
 function useWindowWidth() {
-  // Инициализируем состояние с шириной окна
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    // Обработчик изменения размера окна
+    let resizeTimer; // Для хранения ссылки на таймер
+
     function handleResize() {
-      setWindowWidth(window.innerWidth);
+      clearTimeout(resizeTimer); // Очистка предыдущего таймера перед установкой нового
+      resizeTimer = setTimeout(() => {
+        setWindowWidth(window.innerWidth);
+      }, 1000);
     }
 
-    // Добавляем обработчик события resize
     window.addEventListener("resize", handleResize);
 
-    // Вызываем обработчик сразу же, чтобы инициализировать состояние
     handleResize();
 
-    // Удаляем обработчик события при размонтировании компонента
-    return () => window.removeEventListener("resize", handleResize);
-  }, []); // Пустой массив зависимостей означает, что эффект будет запущен только при монтировании компонента
+    return () => {
+      window.removeEventListener("resize", handleResize); // Удаление обработчика события
+      clearTimeout(resizeTimer); // Очистка таймера при размонтировании
+    };
+  }, []);
 
   return windowWidth;
 }

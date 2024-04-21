@@ -10,8 +10,6 @@ export default function useFormValidate() {
   // Состояние для хранения информации о валидности каждого поля ввода
   const [isInputValid, setIsInputValid] = useState({});
 
-  //console.log(isFormValid)
-
   function handleChange(evt) {
     const { name, value, validationMessage, validity, form } = evt.target;
 
@@ -31,6 +29,16 @@ export default function useFormValidate() {
     setIsInputValid({});
   }
 
+  const reset = useCallback(
+    (data = {}) => {
+      setFormValues(data);
+      setErrors({});
+      setIsFormValid(false);
+      setIsInputValid({});
+    },
+    [setFormValues, setErrors, setIsInputValid, setIsFormValid]
+  );
+
   const setInitialValue = useCallback((name, value) => {
     setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
   }, []);
@@ -42,6 +50,8 @@ export default function useFormValidate() {
     isInputValid,
     handleChange,
     resetForm,
+    reset,
     setInitialValue,
+    setIsFormValid,
   };
 }

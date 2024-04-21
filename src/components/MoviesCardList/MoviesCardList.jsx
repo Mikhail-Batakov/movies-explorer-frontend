@@ -1,56 +1,74 @@
-import "./MoviesCardList.css";
+import React from "react";
+import { useLocation } from "react-router-dom";
 import MoviesCard from "../MoviesCard/MoviesCard";
-import React, { useState, useEffect } from "react";
-import useWindowWidth from "../../utils/useWindowSize.jsx";
+import Preloader from "../Preloader/Preloader.jsx";
+import useMoviesDisplaySettings from "../../utils/hooks/useMoviesDisplaySettings.js";
+import "./MoviesCardList.css";
 
-function MoviesCardList({ arr }) {
-  const width = useWindowWidth(); // Получаем текущую ширину окна
-  const [displayedCount, setDisplayedCount] = useState(0);
-
-  // Настройки для различных разрешений экрана
-  const settings = {
-    1280: { initial: 12, increment: 4 },
-    768: { initial: 8, increment: 2 },
-    320: { initial: 5, increment: 2 },
-  };
-
-  // Определение начального количества и инкремента в зависимости от ширины экрана
-  const { initial, increment } =
-    width >= 1280
-      ? settings["1280"]
-      : width >= 768
-      ? settings["768"]
-      : settings["320"];
-
-  useEffect(() => {
-    // Устанавливаем начальное количество карточек при монтировании компонента или изменении ширины
-    setDisplayedCount(initial);
-  }, [width, initial]); // Отслеживаем изменение ширины окна и начального количества
-
-  // Функция для добавления карточек при нажатии на кнопку "Ещё"
-  const handleShowMore = () => {
-    setDisplayedCount((prevCount) =>
-      Math.min(prevCount + increment, arr.length)
-    );
-  };
+function MoviesCardList({
+  isDisable, //
+  isLoading, //
+  serverError, //
+  savedMovies, //
+  movies, //
+  saveMovie,
+  onDelete,
+}) {
+  const { displayedMovies, handleShowMore } = useMoviesDisplaySettings(movies);
+  const location = useLocation();
 
   return (
     <section className="cards">
       <ul className="cards__list">
-        {arr.slice(0, displayedCount).map((movie) => (
-          <MoviesCard key={movie.id} movie={movie} />
-        ))}
+        {isLoading ? (
+          <Preloader />
+        ) : location.pathname === "/movies" && displayedMovies.length !== 0 ? (
+          displayedMovies.map((movie) => (
+            <MoviesCard
+              key={movie.id}
+              movie={movie}
+              savedMovies={savedMovies}
+              saveMovie={saveMovie}
+            />
+          ))
+        ) : movies.length !== 0 ? (
+          movies.map((movie) => (
+            <MoviesCard
+              key={movie._id}
+              movie={movie}
+              onDelete={onDelete}
+              savedMovies={savedMovies}
+            />
+          ))
+        ) : serverError ? (
+          <span className="cards__list-error">
+            «Во время запроса произошла ошибка. Возможно проблема с соединением
+            или сервер недоступен. Подождите немного и попробуйте еще раз»
+          </span>
+        ) : !isDisable ? (
+          <span className="cards__list-error">«Ничего не нашлось»</span>
+        ) : location.pathname === "/movies" ? (
+          <span className="cards__list-error">
+            «Чтобы получить список фильмов выполните поиск»
+          </span>
+        ) : (
+          <span className="cards__list-error">
+            «Список сохраненных фильмов пуст»
+          </span>
+        )}
       </ul>
-      {displayedCount < arr.length && (
-        <button
-          className="cards__more-btn"
-          type="button"
-          aria-label="Показать еще"
-          onClick={handleShowMore}
-        >
-          Ещё
-        </button>
-      )}
+
+      {location.pathname === "/movies" &&
+        displayedMovies.length < movies.length && (
+          <button
+            className="cards__more-btn"
+            type="button"
+            aria-label="Показать еще"
+            onClick={handleShowMore}
+          >
+            Ещё
+          </button>
+        )}
     </section>
   );
 }
