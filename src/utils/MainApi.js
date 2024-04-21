@@ -166,7 +166,7 @@ class MainApi {
 
 // Создание экземпляра класса
 const mainApi = new MainApi({
-  baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.moviedpl.nomoredomainswork.ru",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
