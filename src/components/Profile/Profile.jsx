@@ -1,46 +1,62 @@
+import "./Profile.css";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-import "./Profile.css";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import useValidate from "../../utils/hooks/useFormValidate.js";
+import { EMAIL_REGEX, NAME_REGEX } from "../../utils/constants.js";
 
-function Profile({ onSubmit, onSignOut, ...props }) {
+function Profile({
+  onSubmit,
+  onSignOut,
+  isError,
+  isSending,
+  isSuccess,
+  setIsSuccess,
+  setIsError,
+  isFormActive,
+  setIsFormActive,
+}) {
   const currentUser = useContext(CurrentUserContext);
-  const [isInputActive, setIsInputActive] = useState(false);
 
-  const {
-    formValues,
-    errors,
-    isFormValid,
+  const { formValues, errors, isFormValid, handleChange, setInitialValue } =
+    useValidate();
 
-    handleChange,
-
-    setInitialValue,
-  } = useValidate();
-
+  // получаем текущие значения
   useEffect(() => {
-    setInitialValue(
-      currentUser
-        ? { name: currentUser.name, email: currentUser.email }
-        : { name: "", email: "" }
-    );
-  }, [setInitialValue, currentUser]);
+    if (currentUser) {
+      setInitialValue("name", currentUser.name);
+      setInitialValue("email", currentUser.email);
+    }
+  }, [currentUser, setInitialValue]);
 
-  // разблокирования полей ввода
-  function handleEditClick() {
-    setIsInputActive(true);
+  function inputChange(e) {
+    setIsError(false);
+    setIsSuccess(false);
+    handleChange(e);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    onSubmit({
-      name: formValues.name,
-      email: formValues.email,
-    });
-
-    setIsInputActive(false);
+    onSubmit(formValues.name, formValues.email);
   }
+
+  // разблокирования полей ввода
+  function handleEditClick() {
+    setIsFormActive(true);
+    setIsSuccess(false);
+  }
+
+  const [isUserDataUnchanged, setIsUserDataUnchanged] = useState(true);
+
+  // Эффект для отслеживания изменений в значениях полей и контексте пользователя
+  useEffect(() => {
+    if (currentUser && formValues.name && formValues.email) {
+      setIsUserDataUnchanged(
+        currentUser.name === formValues.name &&
+          currentUser.email === formValues.email
+      );
+    }
+  }, [currentUser, formValues.name, formValues.email]);
 
   return (
     <section className="profile">
@@ -63,21 +79,17 @@ function Profile({ onSubmit, onSignOut, ...props }) {
               required
               minLength={2}
               maxLength={30}
-              value={
-                formValues.name !== undefined
-                  ? formValues.name
-                  : currentUser.name
-              }
+              pattern={NAME_REGEX}
+              value={formValues.name || ""}
               placeholder="Введите имя"
-              disabled={!isInputActive}
-              onChange={handleChange}
+              disabled={!isFormActive}
+              onChange={inputChange}
             />
           </label>
           <span className="profile__input-error name__error">
             {errors.name}
           </span>
         </div>
-
         <div className="profile__input-container">
           <label className="profile__input-label" htmlFor="email">
             E-mail
@@ -87,14 +99,11 @@ function Profile({ onSubmit, onSignOut, ...props }) {
               name="email"
               type="email"
               required
-              value={
-                formValues.email !== undefined
-                  ? formValues.email
-                  : currentUser.email
-              }
+              pattern={EMAIL_REGEX}
+              value={formValues.email || ""}
               placeholder="Введите e-mail"
-              disabled={!isInputActive}
-              onChange={handleChange}
+              disabled={!isFormActive}
+              onChange={inputChange}
             />
           </label>
           <span className="profile__input-error email__error">
@@ -102,8 +111,22 @@ function Profile({ onSubmit, onSignOut, ...props }) {
           </span>
         </div>
 
-        {!isInputActive ? (
-          <>
+        <span
+          className={`profile__save-message ${
+            isError
+              ? "profile__save-message_type_error"
+              : isSuccess
+              ? "profile__save-message_type_success"
+              : ""
+          }`}
+        >
+          {isError
+            ? "При обновлении данных произошла ошибка"
+            : "Данные успешно обновлены"}
+        </span>
+
+        {!isFormActive ? (
+          <div className="profile__actions">
             <button
               className="profile__btn profile__btn_type_edit"
               type="button"
@@ -115,22 +138,20 @@ function Profile({ onSubmit, onSignOut, ...props }) {
             <Link to="/" className="profile__logout-link" onClick={onSignOut}>
               Выйти из аккаунта
             </Link>
-          </>
+          </div>
         ) : (
-          <>
-            <span className="profile__save-error">
-              При авторизации произошла ошибка. Токен не передан или передан не
-              в том формате.
-            </span>
+          <div className="profile__actions">
             <button
               className="profile__btn profile__btn_type_save"
               type="submit"
               aria-label="Сохранить"
-              disabled={!isFormValid}
+              disabled={
+                !isFormValid || isError || isSending || isUserDataUnchanged
+              }
             >
               Сохранить
             </button>
-          </>
+          </div>
         )}
       </form>
     </section>
@@ -138,65 +159,3 @@ function Profile({ onSubmit, onSignOut, ...props }) {
 }
 
 export default Profile;
-
-// return (
-//   <main className={"profile"} id={"profile"}>
-//     <h1 className={"profile__title"}>{`Привет, ${currentUser.name}!`}</h1>
-//     <form
-//       className={"profile__form"}
-//       id={"profile-form"}
-//       name={"profile-edit"}
-//       autoComplete={"off"}
-//       noValidate
-//       // onSubmit={handleSubmit}
-//     >
-//       <label className={"profile__input-label"}>
-//         Имя
-//         <input
-//           className={"profile__input"}
-//           id={"username"}
-//           name={"username"}
-//           type={"text"}
-//           required
-//           minLength={2}
-//           maxLength={30}
-//           value={formValues.username || currentUser.name}
-//           placeholder={"Как вас зовут?"}
-//           onChange={handleChange}
-//         />
-//       </label>
-//       <label className={"profile__input-label"}>
-//         E-mail
-//         <input
-//           className={"profile__input"}
-//           id={"email"}
-//           name={"email"}
-//           type={"email"}
-//           required
-//           value={formValues.email || currentUser.email}
-//           placeholder={"Ваш e-mail"}
-//           onChange={handleChange}
-//         />
-//       </label>
-//     </form>
-
-//     <div className={"profile__buttons"}>
-//       <button
-//         className={"profile__button profile__button_type_submit-button"}
-//         type={"submit"}
-//         disabled={!isInputValid}
-//         onClick={handleSubmit}
-//       >
-//         Редактировать
-//       </button>
-//       <button
-//         className={"profile__button profile__button_type_logout-button"}
-//         type={"button"}
-//         onClick={onLogOut}
-//       >
-//         Выйти из аккаунта
-//       </button>
-//     </div>
-
-//   </main>
-// );

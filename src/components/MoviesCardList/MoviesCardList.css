@@ -17,6 +17,14 @@
   grid-row-gap: 16px;
   justify-content: center;
   justify-items: center;
+  position: relative;
+}
+
+.cards__list-error {
+  position: absolute;
+  font-size: 14px;
+  line-height: 15px;
+  text-align: center;
 }
 
 .cards__more-btn {

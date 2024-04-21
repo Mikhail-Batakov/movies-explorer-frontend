@@ -1,19 +1,34 @@
 import "./SearchForm.css";
 import SwitchButton from "../SwitchButton/SwitchButton.jsx";
 import useValidate from "../../utils/hooks/useFormValidate.js";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-function SearchForm({ isChecked, onChange }) {
-  const {
-    formValues,
-    errors,
-    isFormValid,
+function SearchForm({
+  isCheck,
+  isSearchMouvies, //
+  searchMouvies,
+  isDisableCheckBox,
+  handleshortMovies,
+  savedMovies,
+}) {
+  const { formValues, errors, isFormValid, handleChange, reset } =
+    useValidate();
 
-    handleChange,
-  } = useValidate();
+  const { pathname } = useLocation();
+
+  //
+  useEffect(() => {
+    if (pathname === "/saved-movies" && savedMovies.length) {
+      reset({ search: "" });
+    } else {
+      reset({ search: isSearchMouvies });
+    }
+  }, [isSearchMouvies, reset, pathname, savedMovies]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("поиск фильмов");
+    searchMouvies(formValues.search);
   };
 
   return (
@@ -49,8 +64,9 @@ function SearchForm({ isChecked, onChange }) {
         </span>
 
         <SwitchButton
-          isChecked={isChecked}
-          onChange={onChange}
+          isCheck={isCheck}
+          onChange={handleshortMovies}
+          isDisableCheckBox={isDisableCheckBox}
           label="Короткометражки"
         />
       </div>

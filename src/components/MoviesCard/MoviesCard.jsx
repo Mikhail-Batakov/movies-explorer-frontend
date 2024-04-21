@@ -1,24 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./MoviesCard.css";
 import { useLocation } from "react-router-dom";
 
-function MoviesCard({ movie, onDelete, onSave }) {
+function MoviesCard({ movie, onDelete, saveMovie, savedMovies }) {
   const { pathname } = useLocation();
   const [isActive, setIsActive] = useState(false);
 
-  //   //обработчик клика по кнопке сохранения
-  //   function handleSaveCard() {
-  //     onSave(movie);
-  //   }
+  useEffect(() => {
+    if (pathname === "/movies")
+      setIsActive(savedMovies.some((item) => movie.id === item.movieId));
+  }, [savedMovies, movie.id, setIsActive, pathname]);
 
-  //обработчик клика по кнопке удаления
   function handleDeleteCard() {
-    onDelete(movie);
+    onDelete(movie._id);
+    console.log("удалить");
   }
 
   const handleSaveCard = () => {
-    setIsActive(!isActive); // Инвертируем текущее состояние isActive
-    // Другие действия при сохранении карточки
+    if (savedMovies.some((item) => movie.id === item.movieId)) {
+      setIsActive(true);
+      saveMovie(movie);
+    } else {
+      setIsActive(false);
+      saveMovie(movie);
+    }
   };
 
   //функция для перевода минут в часы
@@ -35,14 +40,7 @@ function MoviesCard({ movie, onDelete, onSave }) {
           <h2 className="card__title">{movie.nameRU}</h2>
           <p className="card__duration">{formatDuration(movie.duration)}</p>
         </div>
-        {pathname === "/saved-movies" ? (
-          <button
-            type="button"
-            className="card__btn card__btn_type_delete"
-            aria-label="Удалить карточку"
-            onClick={handleDeleteCard}
-          />
-        ) : (
+        {pathname === "/movies" ? (
           <button
             type="button"
             className={`card__btn card__btn_type_save ${
@@ -50,6 +48,13 @@ function MoviesCard({ movie, onDelete, onSave }) {
             }`}
             aria-label="Сохранить карточку"
             onClick={handleSaveCard}
+          />
+        ) : (
+          <button
+            type="button"
+            className="card__btn card__btn_type_delete"
+            aria-label="Удалить карточку"
+            onClick={handleDeleteCard}
           />
         )}
       </div>
@@ -62,7 +67,11 @@ function MoviesCard({ movie, onDelete, onSave }) {
       >
         <img
           className="card__image"
-          src={`https://api.nomoreparties.co${movie.image.url}`} //?
+          src={
+            pathname === "/saved-movies"
+              ? movie.image
+              : `https://api.nomoreparties.co${movie.image.url}`
+          }
           alt={movie.nameRU}
         ></img>
       </a>
